@@ -1,0 +1,10 @@
+# API 키 (GitHub Secrets에 설정)
+.env
+
+# Node
+node_modules/
+package-lock.json
+
+# OS
+Thumbs.db
+.DS_Store

@@ -1,0 +1,27 @@
+name: 매일 아침 버스 알림
+
+on:
+  schedule:
+    # 한국시간 7:30 = UTC 22:30
+    - cron: '30 22 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+      
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: 텔레그램 알림 전송
+        env:
+          BUS_API_KEY: ${{ secrets.BUS_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: node telegram_notify.js
