@@ -2,8 +2,8 @@ name: 매일 아침 버스 알림
 
 on:
   schedule:
-    # 한국시간 7:30 = UTC 22:30
-    - cron: '30 22 * * 1-5'
+    # 한국시간 평일 7:30 = UTC 일~목 22:30 → cron day 0-4
+    - cron: '30 22 * * 0-4'
   workflow_dispatch:
 
 jobs:
