@@ -1,157 +1,128 @@
-// 버스 승차 인원 자동 수집기
-// 매 5분마다 실행되어 버스 위치를 추적하고 승차 인원을 계산
-// GitHub Actions에서 자동 실행
+// 버스 승차 인원 자동 수집기 (루프 버전)
+// 7:30에 실행되어 30분간 매 1분마다 API 호출
+// 정류장별 승차 인원을 정확하게 추적
 
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const { getHolidayInfo } = require('./holidays');
 
-// === 설정 ===
 const SERVICE_KEY = process.env.BUS_API_KEY || '874mgo%2FQ8RDcM%2FhTJn3YI3AEPtV9bXYsuB60MpCxvQBG0ehkCinIQHpp%2BCJhAjzgFUaWVD1l6qXi%2F7P%2FmS5w1Q%3D%3D';
 
-// 추적할 노선
 const ROUTES = {
   '1311': {
     routeId: '234001251',
     name: '1311',
     direction: '오산→강남',
-    myStationSeq: 16  // 세마중고교
+    myStationSeq: 16
   },
   '5104': {
     routeId: '223000150',
     name: '5104',
     direction: '오산→서울역',
-    myStationSeq: 6   // 세마중고교
+    myStationSeq: 6
   }
 };
 
 const DATA_DIR = path.join(__dirname, 'data');
 const RAW_DIR = path.join(DATA_DIR, 'raw');
 const STATS_FILE = path.join(DATA_DIR, 'boarding_stats.json');
+const TRAVEL_STATS_FILE = path.join(DATA_DIR, 'travel_stats.json');
 
-// === 디렉토리 생성 ===
+// 수집 설정
+const COLLECT_DURATION_MS = 120 * 60 * 1000; // 2시간 (06:30~08:30)
+const POLL_INTERVAL_MS = 60 * 1000;            // 1분 간격
+
 function ensureDir(dir) {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
 
-// === API 호출 ===
 function fetchBusLocation(routeId) {
   return new Promise((resolve, reject) => {
     const url = `http://apis.data.go.kr/6410000/buslocationservice/v2/getBusLocationListv2?format=json&serviceKey=${SERVICE_KEY}&routeId=${routeId}`;
-
     http.get(url, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
-        try {
-          const json = JSON.parse(data);
-          resolve(json);
-        } catch (e) {
-          reject(e);
-        }
+        try { resolve(JSON.parse(data)); } catch (e) { reject(e); }
       });
     }).on('error', reject);
   });
 }
 
-// === 현재 시간 정보 ===
 function getTimeInfo() {
   const now = new Date();
-  // 한국 시간 (UTC+9)
   const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-  
-  const year = kst.getUTCFullYear();
-  const month = String(kst.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(kst.getUTCDate()).padStart(2, '0');
   const hour = String(kst.getUTCHours()).padStart(2, '0');
   const minute = String(kst.getUTCMinutes()).padStart(2, '0');
-  
-  const dateStr = `${year}-${month}-${day}`;
-  const timeStr = `${hour}:${minute}`;
-  const hourStr = hour;  // 시간대 (예: "07")
-  
-  // 요일 (0=일, 1=월, ..., 6=토)
   const dayOfWeek = kst.getUTCDay();
   const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
-  const dayName = dayNames[dayOfWeek];
-  
   return {
-    dateStr,
-    timeStr,
-    hourStr,
-    dayName,
+    hour,
+    minute,
+    timeStr: `${hour}:${minute}`,
+    dayName: dayNames[dayOfWeek],
+    dateStr: `${kst.getUTCFullYear()}-${String(kst.getUTCMonth()+1).padStart(2,'0')}-${String(kst.getUTCDate()).padStart(2,'0')}`,
     timestamp: kst.toISOString()
   };
 }
 
-// === Raw 데이터 저장 (매 실행 시 스냅샷) ===
 function saveRawSnapshot(routeKey, busData, timeInfo) {
   ensureDir(RAW_DIR);
   const filename = `${routeKey}_${timeInfo.dateStr.replace(/-/g, '')}.jsonl`;
   const filepath = path.join(RAW_DIR, filename);
-  
   const record = {
     timestamp: timeInfo.timestamp,
     time: timeInfo.timeStr,
-    hour: timeInfo.hourStr,
+    hour: timeInfo.hour,
     dayName: timeInfo.dayName,
     buses: busData
   };
-  
-  fs.appendFileSync(filepath, JSON.stringify(record) + '\n');
+  fs.appendFileSync(filepath, JSON.stringify(record) + '\n', 'utf8');
 }
 
-// === 승차 인원 계산 (핵심 로직) ===
-// 이전 스냅샷과 비교하여 각 버스의 정류장 이동 시 승차 인원 계산
 function calculateBoarding(routeKey, currentBuses, timeInfo) {
-  // 이전 상태 파일 로드
   const stateFile = path.join(DATA_DIR, `state_${routeKey}.json`);
   let prevState = {};
-  
   if (fs.existsSync(stateFile)) {
-    try {
-      prevState = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
-    } catch (e) {
-      prevState = {};
-    }
+    try { prevState = JSON.parse(fs.readFileSync(stateFile, 'utf8')); } catch (e) { prevState = {}; }
   }
   
   const boardings = [];
+  const travels = []; // 정류장 간 이동시간
   const newState = {};
   
   if (!currentBuses || !currentBuses.busLocationList) {
-    return { boardings, newState };
+    return { boardings, travels, newState };
   }
   
   const buses = Array.isArray(currentBuses.busLocationList)
     ? currentBuses.busLocationList
     : [currentBuses.busLocationList];
   
+  const currentTime = new Date(timeInfo.timestamp).getTime();
+  
   buses.forEach(bus => {
     const vehId = bus.vehId;
     const currentSeq = parseInt(bus.stationSeq);
     const currentSeats = parseInt(bus.remainSeatCnt);
-    const stateCd = parseInt(bus.stateCd);  // 1=정류장 도착, 2=정류장 출발
     
     newState[vehId] = {
       stationSeq: currentSeq,
       remainSeatCnt: currentSeats,
-      stateCd: stateCd,
+      stateCd: parseInt(bus.stateCd),
       timestamp: timeInfo.timestamp
     };
     
-    // 이전 상태가 있으면 비교
     if (prevState[vehId]) {
       const prevSeq = prevState[vehId].stationSeq;
       const prevSeats = prevState[vehId].remainSeatCnt;
+      const prevTime = new Date(prevState[vehId].timestamp).getTime();
       
-      // 정류장이 변경되었고, 빈좌석이 감소했으면 승차 발생
+      // 승차 인원 계산
       if (currentSeq > prevSeq && currentSeats >= 0 && prevSeats >= 0) {
         const boarding = prevSeats - currentSeats;
         if (boarding > 0) {
-          // prevSeq 정류장에서 boarding명 승차
           boardings.push({
             vehId: vehId,
             plateNo: bus.plateNo,
@@ -160,7 +131,24 @@ function calculateBoarding(routeKey, currentBuses, timeInfo) {
             prevSeats: prevSeats,
             currentSeats: currentSeats,
             boardingCount: boarding,
-            hour: timeInfo.hourStr,
+            hour: timeInfo.hour,
+            dayName: timeInfo.dayName,
+            date: timeInfo.dateStr,
+            time: timeInfo.timeStr
+          });
+        }
+      }
+      
+      // 정류장 간 이동시간 계산 (정류장이 변경된 경우)
+      if (currentSeq !== prevSeq) {
+        const travelTimeMin = Math.round((currentTime - prevTime) / 60000);
+        if (travelTimeMin > 0 && travelTimeMin <= 30) { // 30분 이하만 유효
+          travels.push({
+            vehId: vehId,
+            fromStationSeq: prevSeq,
+            toStationSeq: currentSeq,
+            travelTimeMin: travelTimeMin,
+            hour: timeInfo.hour,
             dayName: timeInfo.dayName,
             date: timeInfo.dateStr,
             time: timeInfo.timeStr
@@ -170,26 +158,18 @@ function calculateBoarding(routeKey, currentBuses, timeInfo) {
     }
   });
   
-  return { boardings, newState };
+  return { boardings, travels, newState };
 }
 
-// === 통계 데이터 업데이트 ===
 function updateStats(routeKey, boardings) {
   ensureDir(DATA_DIR);
-  
   let stats = {};
   if (fs.existsSync(STATS_FILE)) {
-    try {
-      stats = JSON.parse(fs.readFileSync(STATS_FILE, 'utf8'));
-    } catch (e) {
-      stats = {};
-    }
+    try { stats = JSON.parse(fs.readFileSync(STATS_FILE, 'utf8')); } catch (e) { stats = {}; }
   }
-  
   if (!stats[routeKey]) stats[routeKey] = {};
   
   boardings.forEach(b => {
-    // 요일별 + 시간대별 + 정류장별 승차 인원 누적
     const dayKey = b.dayName;
     const hourKey = b.hour;
     const stationKey = `station_${b.fromStationSeq}`;
@@ -197,90 +177,138 @@ function updateStats(routeKey, boardings) {
     if (!stats[routeKey][dayKey]) stats[routeKey][dayKey] = {};
     if (!stats[routeKey][dayKey][hourKey]) stats[routeKey][dayKey][hourKey] = {};
     if (!stats[routeKey][dayKey][hourKey][stationKey]) {
-      stats[routeKey][dayKey][hourKey][stationKey] = {
-        totalBoarding: 0,
-        count: 0,
-        samples: []
-      };
+      stats[routeKey][dayKey][hourKey][stationKey] = { totalBoarding: 0, count: 0, samples: [] };
     }
     
     const s = stats[routeKey][dayKey][hourKey][stationKey];
     s.totalBoarding += b.boardingCount;
     s.count += 1;
-    s.samples.push({
-      date: b.date,
-      time: b.time,
-      boarding: b.boardingCount,
-      vehId: b.vehId
-    });
-    
-    // 샘플 최대 50개만 보관
-    if (s.samples.length > 50) {
-      s.samples = s.samples.slice(-50);
-    }
+    s.samples.push({ date: b.date, time: b.time, boarding: b.boardingCount, vehId: b.vehId });
+    if (s.samples.length > 50) s.samples = s.samples.slice(-50);
   });
   
-  fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2));
+  fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2), 'utf8');
 }
 
-// === 상태 저장 ===
+// 정류장 간 이동시간 통계 업데이트
+function updateTravelStats(routeKey, travels) {
+  ensureDir(DATA_DIR);
+  let stats = {};
+  if (fs.existsSync(TRAVEL_STATS_FILE)) {
+    try { stats = JSON.parse(fs.readFileSync(TRAVEL_STATS_FILE, 'utf8')); } catch (e) { stats = {}; }
+  }
+  if (!stats[routeKey]) stats[routeKey] = {};
+  
+  travels.forEach(t => {
+    const dayKey = t.dayName;
+    const hourKey = t.hour;
+    const segmentKey = `seg_${t.fromStationSeq}_${t.toStationSeq}`;
+    
+    if (!stats[routeKey][dayKey]) stats[routeKey][dayKey] = {};
+    if (!stats[routeKey][dayKey][hourKey]) stats[routeKey][dayKey][hourKey] = {};
+    if (!stats[routeKey][dayKey][hourKey][segmentKey]) {
+      stats[routeKey][dayKey][hourKey][segmentKey] = { totalTime: 0, count: 0, samples: [] };
+    }
+    
+    const s = stats[routeKey][dayKey][hourKey][segmentKey];
+    s.totalTime += t.travelTimeMin;
+    s.count += 1;
+    s.samples.push({ date: t.date, time: t.time, travelMin: t.travelTimeMin, vehId: t.vehId });
+    if (s.samples.length > 50) s.samples = s.samples.slice(-50);
+  });
+  
+  fs.writeFileSync(TRAVEL_STATS_FILE, JSON.stringify(stats, null, 2), 'utf8');
+}
+
 function saveState(routeKey, state) {
   ensureDir(DATA_DIR);
-  const stateFile = path.join(DATA_DIR, `state_${routeKey}.json`);
-  fs.writeFileSync(stateFile, JSON.stringify(state, null, 2));
+  fs.writeFileSync(path.join(DATA_DIR, `state_${routeKey}.json`), JSON.stringify(state, null, 2), 'utf8');
 }
 
-// === 메인 실행 ===
-async function main() {
+// 단일 수집 사이클 (공휴일 전날은 raw만 수집 — 통계 집계 스킵)
+async function collectOnce(skipStats) {
   const timeInfo = getTimeInfo();
-  console.log(`[${timeInfo.timestamp}] 데이터 수집 시작`);
-  console.log(`날짜: ${timeInfo.dateStr} (${timeInfo.dayName}), 시간: ${timeInfo.timeStr}`);
+  console.log(`\n[${timeInfo.timeStr}] 수집 중...`);
+  
+  for (const [routeKey, route] of Object.entries(ROUTES)) {
+    try {
+      const data = await fetchBusLocation(route.routeId);
+      const response = data.response || data;
+      
+      if (response.msgHeader && response.msgHeader.resultCode !== 0) {
+        console.log(`  ${route.name}: API 오류`);
+        continue;
+      }
+      
+      saveRawSnapshot(routeKey, response, timeInfo);
+      
+      const msgBody = response.msgBody || {};
+      const { boardings, travels, newState } = calculateBoarding(routeKey, msgBody, timeInfo);
+      
+      const buses = msgBody.busLocationList;
+      const busCount = buses ? (Array.isArray(buses) ? buses.length : 1) : 0;
+      console.log(`  ${route.name}: ${busCount}대`);
+      
+      if (!skipStats) {
+        if (boardings.length > 0) {
+          boardings.forEach(b => {
+            console.log(`    📍 정류장 ${b.fromStationSeq}→${b.toStationSeq}: ${b.boardingCount}명 승차`);
+          });
+          updateStats(routeKey, boardings);
+        }
+        
+        if (travels.length > 0) {
+          travels.forEach(t => {
+            console.log(`    ⏱️ 정류장 ${t.fromStationSeq}→${t.toStationSeq}: ${t.travelTimeMin}분 소요`);
+          });
+          updateTravelStats(routeKey, travels);
+        }
+      }
+      
+      saveState(routeKey, newState);
+    } catch (error) {
+      console.log(`  ${route.name}: 오류 - ${error.message}`);
+    }
+  }
+}
+
+// 메인: 2시간 동안 매 1분마다 수집
+async function main() {
+  console.log('╔══════════════════════════════════╗');
+  console.log('║  버스 데이터 수집 (2시간 루프)   ║');
+  console.log('╚══════════════════════════════════╝');
+  
+  // 공휴일 체크 — 공휴일은 수집 스킵, 전날은 통계 집계만 스킵
+  const holiday = await getHolidayInfo();
+  if (holiday.isHoliday) {
+    console.log(`오늘(${holiday.today})은 공휴일 — 수집 스킵`);
+    return;
+  }
+  const skipStats = holiday.isDayBeforeHoliday;
+  if (skipStats) {
+    console.log(`내일이 공휴일 — raw만 수집 (통계 집계 스킵, 평소 왜곡 방지)`);
+  }
+  
+  const startTime = Date.now();
+  const endTime = startTime + COLLECT_DURATION_MS;
+  let cycle = 0;
   
   ensureDir(DATA_DIR);
   ensureDir(RAW_DIR);
   
-  for (const [routeKey, route] of Object.entries(ROUTES)) {
-    try {
-      console.log(`\n--- ${route.name} (${route.direction}) ---`);
-      const busData = await fetchBusLocation(route.routeId);
-      
-      const response = busData.response || busData;
-      
-      if (response.msgHeader && response.msgHeader.resultCode !== 0) {
-        console.log(`API 오류: ${response.msgHeader.resultMessage}`);
-        continue;
-      }
-      
-      // Raw 스냅샷 저장
-      saveRawSnapshot(routeKey, response, timeInfo);
-      
-      const buses = response.msgBody ? response.msgBody.busLocationList : null;
-      const busCount = Array.isArray(buses) ? buses.length : (buses ? 1 : 0);
-      console.log(`버스 ${busCount}대 운행 중`);
-      
-      // 승차 인원 계산 (msgBody 전달)
-      const msgBody = response.msgBody || {};
-      const { boardings, newState } = calculateBoarding(routeKey, msgBody, timeInfo);
-      
-      if (boardings.length > 0) {
-        console.log(`승차 감지: ${boardings.length}건`);
-        boardings.forEach(b => {
-          console.log(`  정류장 ${b.fromStationSeq}→${b.toStationSeq}: ${b.boardingCount}명 승차 (좌석 ${b.prevSeats}→${b.currentSeats})`);
-        });
-        
-        // 통계 업데이트
-        updateStats(routeKey, boardings);
-      }
-      
-      // 상태 저장
-      saveState(routeKey, newState);
-      
-    } catch (error) {
-      console.log(`${route.name} 오류: ${error.message}`);
+  while (Date.now() < endTime) {
+    cycle++;
+    console.log(`\n=== 사이클 ${cycle} ===`);
+    await collectOnce(skipStats);
+    
+    if (Date.now() < endTime) {
+      await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL_MS));
     }
   }
   
-  console.log('\n수집 완료');
+  console.log('\n╔══════════════════════════════════╗');
+  console.log('║  수집 완료                        ║');
+  console.log('╚══════════════════════════════════╝');
 }
 
 main().catch(console.error);

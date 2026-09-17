@@ -1,0 +1,86 @@
+{
+  "1311": {
+    "수": {
+      "15": {
+        "seg_44_45": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-16",
+              "time": "15:20",
+              "travelMin": 1,
+              "vehId": 234000021
+            }
+          ]
+        },
+        "seg_45_46": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-16",
+              "time": "15:21",
+              "travelMin": 1,
+              "vehId": 234000021
+            }
+          ]
+        },
+        "seg_50_51": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-16",
+              "time": "15:21",
+              "travelMin": 1,
+              "vehId": 234000053
+            }
+          ]
+        }
+      }
+    }
+  },
+  "5104": {
+    "수": {
+      "15": {
+        "seg_15_16": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-16",
+              "time": "15:20",
+              "travelMin": 1,
+              "vehId": 233010572
+            }
+          ]
+        },
+        "seg_31_32": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-16",
+              "time": "15:20",
+              "travelMin": 1,
+              "vehId": 233010568
+            }
+          ]
+        },
+        "seg_56_57": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-16",
+              "time": "15:22",
+              "travelMin": 1,
+              "vehId": 233010573
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -2,12 +2,9 @@ name: 버스 승차 인원 자동 수집
 
 on:
   schedule:
-    # 평일 한국시간 7:30-8:00 (UTC 22:30-23:00, 전일)
-    # 한국 월~금 7:30 = UTC 일~목 22:30 → cron day 0-4
-    # 7:30-7:55: 매 5분 (22:30-22:55 UTC)
-    - cron: '30/5 22 * * 0-4'
-    # 8:00 (23:00 UTC)
-    - cron: '0 23 * * 0-4'
+    # 평일 한국시간 6:30 = UTC 일~목 21:30
+    # 1회 실행 → 스크립트가 2시간 동안(6:30~8:30) 매 1분마다 수집
+    - cron: '30 21 * * 0-4'
   workflow_dispatch:
 
 jobs:
@@ -25,15 +22,18 @@ jobs:
         with:
           node-version: '20'
       
-      - name: 데이터 수집 실행
+      - name: 데이터 수집 실행 + 10분마다 중간 커밋 (7:35 알림이 당일 데이터 활용 가능)
         env:
           BUS_API_KEY: ${{ secrets.BUS_API_KEY }}
-        run: node collect_bus_data.js
-      
-      - name: 변경된 데이터 커밋
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
+          node collect_bus_data.js &
+          COLLECT_PID=$!
+          while kill -0 $COLLECT_PID 2>/dev/null; do
+            sleep 600
+            git add data/
+            git diff --staged --quiet || (git commit -m "데이터 수집 중: $(date -u '+%H:%M') UTC" && git push)
+          done
           git add data/
-          git diff --staged --quiet || git commit -m "데이터 수집: $(date -u '+%Y-%m-%d %H:%M') UTC"
-          git push
+          git diff --staged --quiet || (git commit -m "데이터 수집 완료" && git push)

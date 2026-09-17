@@ -2,8 +2,9 @@ name: 매일 아침 버스 알림
 
 on:
   schedule:
-    # 한국시간 평일 7:30 = UTC 일~목 22:30 → cron day 0-4
-    - cron: '30 22 * * 0-4'
+    # 한국시간 평일 7:00 = UTC 일~목 22:00
+    # 1회 실행 → 스크립트가 8:35까지 40초 간격으로 조건 감시 (정류장 도착 순간 포착)
+    - cron: '0 22 * * 0-4'
   workflow_dispatch:
 
 jobs:
@@ -19,9 +20,16 @@ jobs:
         with:
           node-version: '20'
       
-      - name: 텔레그램 알림 전송
+      - name: 텔레그램 알림 감시 (40초 간격, ~08:35까지)
         env:
           BUS_API_KEY: ${{ secrets.BUS_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: node telegram_notify.js
+        run: node telegram_notify.js --watch
+      
+      - name: 알림 발송 상태 저장 (중복 알림 방지)
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
+          git add data/alert_state_*.json 2>/dev/null || true
+          git diff --staged --quiet || (git commit -m "알림 상태 저장" && git pull --rebase && git push)
