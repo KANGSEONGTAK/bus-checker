@@ -1,6 +1,20 @@
 {
   "5104": {
     "목": {
+      "10": {
+        "station_2": {
+          "totalBoarding": 37,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-17",
+              "time": "10:09",
+              "boarding": 37,
+              "vehId": 233010568
+            }
+          ]
+        }
+      },
       "09": {
         "station_13": {
           "totalBoarding": 1,
