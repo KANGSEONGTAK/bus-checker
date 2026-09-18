@@ -13,6 +13,44 @@
               "vehId": 234000193
             }
           ]
+        },
+        "station_14": {
+          "totalBoarding": 7,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:56",
+              "boarding": 7,
+              "vehId": 234000193
+            }
+          ]
+        },
+        "station_15": {
+          "totalBoarding": 2,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:57",
+              "boarding": 2,
+              "vehId": 234000193
+            }
+          ]
+        }
+      },
+      "09": {
+        "station_2": {
+          "totalBoarding": 4,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:03",
+              "boarding": 4,
+              "vehId": 234000703
+            }
+          ]
         }
       }
     }
@@ -43,6 +81,36 @@
               "time": "09:44",
               "boarding": 1,
               "vehId": 233010572
+            }
+          ]
+        }
+      }
+    },
+    "금": {
+      "08": {
+        "station_32": {
+          "totalBoarding": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:59",
+              "boarding": 1,
+              "vehId": 233010572
+            }
+          ]
+        }
+      },
+      "09": {
+        "station_2": {
+          "totalBoarding": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:01",
+              "boarding": 1,
+              "vehId": 233010573
             }
           ]
         }

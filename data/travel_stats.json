@@ -43,14 +43,20 @@
     "금": {
       "08": {
         "seg_16_17": {
-          "totalTime": 1,
-          "count": 1,
+          "totalTime": 2,
+          "count": 2,
           "samples": [
             {
               "date": "2026-09-18",
               "time": "08:36",
               "travelMin": 1,
               "vehId": 234002917
+            },
+            {
+              "date": "2026-09-18",
+              "time": "08:58",
+              "travelMin": 1,
+              "vehId": 234000193
             }
           ]
         },
@@ -133,14 +139,20 @@
           ]
         },
         "seg_33_34": {
-          "totalTime": 1,
-          "count": 1,
+          "totalTime": 2,
+          "count": 2,
           "samples": [
             {
               "date": "2026-09-18",
               "time": "08:38",
               "travelMin": 1,
               "vehId": 234000696
+            },
+            {
+              "date": "2026-09-18",
+              "time": "08:59",
+              "travelMin": 1,
+              "vehId": 234000021
             }
           ]
         },
@@ -535,14 +547,20 @@
           ]
         },
         "seg_23_24": {
-          "totalTime": 1,
-          "count": 1,
+          "totalTime": 2,
+          "count": 2,
           "samples": [
             {
               "date": "2026-09-18",
               "time": "08:53",
               "travelMin": 1,
               "vehId": 234000592
+            },
+            {
+              "date": "2026-09-18",
+              "time": "08:56",
+              "travelMin": 1,
+              "vehId": 234002917
             }
           ]
         },
@@ -603,6 +621,290 @@
               "time": "08:54",
               "travelMin": 1,
               "vehId": 234000053
+            }
+          ]
+        },
+        "seg_24_25": {
+          "totalTime": 2,
+          "count": 2,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:55",
+              "travelMin": 1,
+              "vehId": 234000592
+            },
+            {
+              "date": "2026-09-18",
+              "time": "08:58",
+              "travelMin": 1,
+              "vehId": 234002917
+            }
+          ]
+        },
+        "seg_40_41": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:55",
+              "travelMin": 1,
+              "vehId": 234000696
+            }
+          ]
+        },
+        "seg_57_58": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:55",
+              "travelMin": 1,
+              "vehId": 234000053
+            }
+          ]
+        },
+        "seg_14_15": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:56",
+              "travelMin": 1,
+              "vehId": 234000193
+            }
+          ]
+        },
+        "seg_25_26": {
+          "totalTime": 2,
+          "count": 2,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:56",
+              "travelMin": 1,
+              "vehId": 234000592
+            },
+            {
+              "date": "2026-09-18",
+              "time": "08:59",
+              "travelMin": 1,
+              "vehId": 234002917
+            }
+          ]
+        },
+        "seg_41_42": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:56",
+              "travelMin": 1,
+              "vehId": 234000696
+            }
+          ]
+        },
+        "seg_15_16": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:57",
+              "travelMin": 1,
+              "vehId": 234000193
+            }
+          ]
+        },
+        "seg_58_60": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:57",
+              "travelMin": 1,
+              "vehId": 234000053
+            }
+          ]
+        },
+        "seg_26_27": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:59",
+              "travelMin": 1,
+              "vehId": 234000592
+            }
+          ]
+        }
+      },
+      "09": {
+        "seg_27_28": {
+          "totalTime": 2,
+          "count": 2,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:00",
+              "travelMin": 1,
+              "vehId": 234000592
+            },
+            {
+              "date": "2026-09-18",
+              "time": "09:03",
+              "travelMin": 1,
+              "vehId": 234002917
+            }
+          ]
+        },
+        "seg_54_55": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:00",
+              "travelMin": 1,
+              "vehId": 234000190
+            }
+          ]
+        },
+        "seg_60_61": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:00",
+              "travelMin": 1,
+              "vehId": 234000053
+            }
+          ]
+        },
+        "seg_26_27": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:01",
+              "travelMin": 1,
+              "vehId": 234002917
+            }
+          ]
+        },
+        "seg_42_43": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:01",
+              "travelMin": 1,
+              "vehId": 234000696
+            }
+          ]
+        },
+        "seg_1_2": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:02",
+              "travelMin": 1,
+              "vehId": 234000703
+            }
+          ]
+        },
+        "seg_28_29": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:02",
+              "travelMin": 1,
+              "vehId": 234000592
+            }
+          ]
+        },
+        "seg_34_36": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:02",
+              "travelMin": 1,
+              "vehId": 234000021
+            }
+          ]
+        },
+        "seg_43_44": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:02",
+              "travelMin": 1,
+              "vehId": 234000696
+            }
+          ]
+        },
+        "seg_2_3": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:03",
+              "travelMin": 1,
+              "vehId": 234000703
+            }
+          ]
+        },
+        "seg_61_62": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:03",
+              "travelMin": 1,
+              "vehId": 234000053
+            }
+          ]
+        },
+        "seg_29_30": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:04",
+              "travelMin": 1,
+              "vehId": 234000592
+            }
+          ]
+        },
+        "seg_44_45": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:04",
+              "travelMin": 1,
+              "vehId": 234000696
             }
           ]
         }
@@ -755,14 +1057,20 @@
           ]
         },
         "seg_27_28": {
-          "totalTime": 1,
-          "count": 1,
+          "totalTime": 2,
+          "count": 2,
           "samples": [
             {
               "date": "2026-09-18",
               "time": "08:42",
               "travelMin": 1,
               "vehId": 233010572
+            },
+            {
+              "date": "2026-09-18",
+              "time": "08:56",
+              "travelMin": 1,
+              "vehId": 233010571
             }
           ]
         },
@@ -1039,6 +1347,188 @@
               "time": "08:54",
               "travelMin": 1,
               "vehId": 233010569
+            }
+          ]
+        },
+        "seg_30_31": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:55",
+              "travelMin": 1,
+              "vehId": 233010572
+            }
+          ]
+        },
+        "seg_50_51": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:56",
+              "travelMin": 1,
+              "vehId": 233010568
+            }
+          ]
+        },
+        "seg_16_17": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:57",
+              "travelMin": 1,
+              "vehId": 233010570
+            }
+          ]
+        },
+        "seg_31_32": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:57",
+              "travelMin": 1,
+              "vehId": 233010572
+            }
+          ]
+        },
+        "seg_17_18": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:58",
+              "travelMin": 1,
+              "vehId": 233010570
+            }
+          ]
+        },
+        "seg_51_52": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:58",
+              "travelMin": 1,
+              "vehId": 233010568
+            }
+          ]
+        },
+        "seg_57_58": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:58",
+              "travelMin": 1,
+              "vehId": 233010569
+            }
+          ]
+        },
+        "seg_32_33": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "08:59",
+              "travelMin": 1,
+              "vehId": 233010572
+            }
+          ]
+        }
+      },
+      "09": {
+        "seg_18_19": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:00",
+              "travelMin": 1,
+              "vehId": 233010570
+            }
+          ]
+        },
+        "seg_33_34": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:00",
+              "travelMin": 1,
+              "vehId": 233010572
+            }
+          ]
+        },
+        "seg_2_3": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:01",
+              "travelMin": 1,
+              "vehId": 233010573
+            }
+          ]
+        },
+        "seg_19_20": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:01",
+              "travelMin": 1,
+              "vehId": 233010570
+            }
+          ]
+        },
+        "seg_28_29": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:02",
+              "travelMin": 1,
+              "vehId": 233010571
+            }
+          ]
+        },
+        "seg_20_21": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:03",
+              "travelMin": 1,
+              "vehId": 233010570
+            }
+          ]
+        },
+        "seg_34_35": {
+          "totalTime": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:04",
+              "travelMin": 1,
+              "vehId": 233010572
             }
           ]
         }
