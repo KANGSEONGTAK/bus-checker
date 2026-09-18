@@ -29,9 +29,14 @@ const RAW_DIR = path.join(DATA_DIR, 'raw');
 const STATS_FILE = path.join(DATA_DIR, 'boarding_stats.json');
 const TRAVEL_STATS_FILE = path.join(DATA_DIR, 'travel_stats.json');
 
-// 수집 설정
-const COLLECT_DURATION_MS = 120 * 60 * 1000; // 2시간 (06:30~08:30)
-const POLL_INTERVAL_MS = 60 * 1000;            // 1분 간격
+// 수집 설정 — KST 고정 시간창 (cron 지연 흡수: 일찍 시작하면 대기, 늦으면 남은 시간만)
+const POLL_INTERVAL_MS = 60 * 1000;  // 1분 간격
+const KST_START_MIN = 6 * 60 + 30;   // 06:30 KST
+const KST_END_MIN = 8 * 60 + 30;     // 08:30 KST
+function kstMinutes() {
+  const d = new Date(Date.now() + 9 * 3600 * 1000);
+  return d.getUTCHours() * 60 + d.getUTCMinutes() + d.getUTCSeconds() / 60;
+}
 
 function ensureDir(dir) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -289,8 +294,14 @@ async function main() {
     console.log(`내일이 공휴일 — raw만 수집 (통계 집계 스킵, 평소 왜곡 방지)`);
   }
   
-  const startTime = Date.now();
-  const endTime = startTime + COLLECT_DURATION_MS;
+  // 06:30 전에 시작했으면 시작 시각까지 대기 (cron이 일찍/늦게 떠도 KST 창 고정)
+  const startWait = (KST_START_MIN - kstMinutes()) * 60000;
+  if (startWait > 0) {
+    console.log(`KST 06:30까지 ${Math.round(startWait / 60000)}분 대기`);
+    await new Promise(r => setTimeout(r, startWait));
+  }
+
+  const endTime = Date.now() + Math.max(0, (KST_END_MIN - kstMinutes()) * 60000);
   let cycle = 0;
   
   ensureDir(DATA_DIR);

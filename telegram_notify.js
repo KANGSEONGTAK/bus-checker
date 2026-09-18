@@ -862,15 +862,23 @@ async function runOnce() {
   return state;
 }
 
-// --watch: 08:35 KST까지 40초마다 조건 체크 (정류장 도착 순간 포착용)
+// --watch: 07:00~08:35 KST 동안 40초마다 조건 체크 (정류장 도착 순간 포착용)
 const WATCH_POLL_MS = 40 * 1000;
-const WATCH_END_MIN = 8 * 60 + 35;
+const WATCH_START_MIN = 7 * 60;      // 07:00 KST
+const WATCH_END_MIN = 8 * 60 + 35;   // 08:35 KST
 
 async function main() {
   if (!process.argv.includes('--watch')) {
     return runOnce();
   }
-  console.log('워치 모드 시작 — 08:35까지 40초 간격 감시');
+  console.log('워치 모드 시작 — 07:00~08:35 KST, 40초 간격 감시');
+  // cron이 일찍 실행되면 07:00까지 대기 (GitHub 스케줄 지연 흡수)
+  while (true) {
+    const kst = new Date(Date.now() + 9 * 3600 * 1000);
+    const mins = kst.getUTCHours() * 60 + kst.getUTCMinutes() + kst.getUTCSeconds() / 60;
+    if (mins >= WATCH_START_MIN) break;
+    await new Promise(r => setTimeout(r, 30000));
+  }
   while (true) {
     const kst = new Date(Date.now() + 9 * 3600 * 1000);
     const mins = kst.getUTCHours() * 60 + kst.getUTCMinutes();
