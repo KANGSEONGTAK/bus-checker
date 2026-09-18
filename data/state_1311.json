@@ -1,50 +1,44 @@
 {
   "234000021": {
-    "stationSeq": 40,
+    "stationSeq": 43,
     "remainSeatCnt": 40,
-    "stateCd": 1,
-    "timestamp": "2026-09-18T09:14:35.398Z"
-  },
-  "234000053": {
-    "stationSeq": 68,
-    "remainSeatCnt": 66,
     "stateCd": 0,
-    "timestamp": "2026-09-18T09:14:35.398Z"
+    "timestamp": "2026-09-18T09:24:43.062Z"
   },
   "234000190": {
-    "stationSeq": 61,
-    "remainSeatCnt": 36,
+    "stationSeq": 67,
+    "remainSeatCnt": 39,
     "stateCd": 2,
-    "timestamp": "2026-09-18T09:14:35.398Z"
+    "timestamp": "2026-09-18T09:24:43.062Z"
   },
   "234000193": {
-    "stationSeq": 20,
+    "stationSeq": 26,
     "remainSeatCnt": 14,
-    "stateCd": 0,
-    "timestamp": "2026-09-18T09:14:35.398Z"
+    "stateCd": 2,
+    "timestamp": "2026-09-18T09:24:43.062Z"
   },
   "234000592": {
-    "stationSeq": 33,
-    "remainSeatCnt": 2,
-    "stateCd": 0,
-    "timestamp": "2026-09-18T09:14:35.398Z"
+    "stationSeq": 38,
+    "remainSeatCnt": 36,
+    "stateCd": 2,
+    "timestamp": "2026-09-18T09:24:43.062Z"
   },
   "234000696": {
-    "stationSeq": 50,
+    "stationSeq": 54,
     "remainSeatCnt": 69,
     "stateCd": 2,
-    "timestamp": "2026-09-18T09:14:35.398Z"
+    "timestamp": "2026-09-18T09:24:43.062Z"
   },
   "234000703": {
-    "stationSeq": 11,
-    "remainSeatCnt": 27,
-    "stateCd": 1,
-    "timestamp": "2026-09-18T09:14:35.398Z"
+    "stationSeq": 16,
+    "remainSeatCnt": 16,
+    "stateCd": 2,
+    "timestamp": "2026-09-18T09:24:43.062Z"
   },
   "234002917": {
-    "stationSeq": 33,
-    "remainSeatCnt": 16,
-    "stateCd": 0,
-    "timestamp": "2026-09-18T09:14:35.398Z"
+    "stationSeq": 37,
+    "remainSeatCnt": 44,
+    "stateCd": 2,
+    "timestamp": "2026-09-18T09:24:43.062Z"
   }
 }

@@ -87,6 +87,42 @@
               "vehId": 234000703
             }
           ]
+        },
+        "station_13": {
+          "totalBoarding": 5,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:19",
+              "boarding": 5,
+              "vehId": 234000703
+            }
+          ]
+        },
+        "station_14": {
+          "totalBoarding": 1,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:23",
+              "boarding": 1,
+              "vehId": 234000703
+            }
+          ]
+        },
+        "station_15": {
+          "totalBoarding": 2,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:24",
+              "boarding": 2,
+              "vehId": 234000703
+            }
+          ]
         }
       }
     }
@@ -158,6 +194,18 @@
               "date": "2026-09-18",
               "time": "09:13",
               "boarding": 6,
+              "vehId": 233010573
+            }
+          ]
+        },
+        "station_6": {
+          "totalBoarding": 4,
+          "count": 1,
+          "samples": [
+            {
+              "date": "2026-09-18",
+              "time": "09:16",
+              "boarding": 4,
               "vehId": 233010573
             }
           ]
