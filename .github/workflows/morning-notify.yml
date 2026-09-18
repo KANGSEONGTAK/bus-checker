@@ -2,9 +2,9 @@ name: 매일 아침 버스 알림
 
 on:
   schedule:
-    # 한국시간 6:40 = UTC 일~목 21:40 (정각 회피로 cron 지연 줄이기)
-    # 스크립트가 KST 7:00까지 대기 후 감시 시작 — GitHub cron 지연 흡수
-    - cron: '40 21 * * 0-4'
+    # 한국시간 6:00 = UTC 일~목 21:00
+    # 스크립트가 KST 7:00까지 대기 후 감시 — cron이 최대 ~2.5시간 지연돼도 동작
+    - cron: '0 21 * * 0-4'
   workflow_dispatch:
 
 jobs:
